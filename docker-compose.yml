@@ -1,0 +1,32 @@
+version: '3.6'
+services:
+  eduroam_idp:
+    build:
+       context: .
+       dockerfile: Dockerfile
+    image: ericattou/eduroam_flr:1.0
+    restart: unless-stopped
+    container_name: eduroam_flr
+    volumes: 
+       - ./radius/proxy.conf:/etc/raddb/proxy.conf
+       - ./radius/clients.conf:/etc/raddb/clients.conf
+       - ./radius/users:/etc/raddb/users
+    ports:
+       - "1812-1813:1812-1813/udp"
+    logging:
+       ##Debug with 'docker logs -f CONTAINERID'
+       driver: "json-file"
+       ###Centralized Log Analysis using Fluentd
+       ###driver: "fluentd"
+       ### options:
+       ### fluentd-address: 172.18.0.31:24224
+       ### tag: eduroam.flr
+  networks:
+    - flrnet
+
+networks:
+  flrnet:
+volumes:
+  radius:
+
+       
